@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title></title>
+    <style>
+      html,
+      body,
+      main {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+      }
+      main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: clamp(6rem, 80vw, 20rem);
+      }
+      .sleep {
+        background-color: #2e63a5;
+      }
+      .wake {
+        background-color: blue;
+      }
+      .breakfast {
+        background-color: blue;
+      }
+      .bathroom {
+        background-color: blue;
+      }
+      .travel {
+        background-color: blue;
+      }
+      .snack {
+        background-color: blue;
+      }
+      .lunch {
+        background-color: blue;
+      }
+      .dinner {
+        background-color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <template type="text/html" id="sleep"> 😴 </template>
+    <template type="text/html" id="wake"> 🥱 </template>
+    <template type="text/html" id="breakfast"> 🥣 </template>
+    <template type="text/html" id="bathroom"> 🦷🪥 </template>
+    <template type="text/html" id="travel"> 🚲 </template>
+    <template type="text/html" id="snack"> 🍐 </template>
+    <template type="text/html" id="lunch"> 🥗 </template>
+    <template type="text/html" id="dinner"> 🥘 </template>
+    <main id="main"></main>
+    <script>
+      const App = {};
+      App.parseTime = (time) => {
+        const [hour, minute] = time.split(":").map(Number);
+        return hour + minute / 100;
+      };
+      App.schedule = [
+        ["00:00", "sleep"],
+        ["06:30", "wake"],
+        ["07:00", "breakfast"],
+        ["07:20", "bathroom"],
+        ["07:45", "travel"],
+        ["09:00", "snack"],
+        ["11:00", "lunch"],
+        ["11:30", "sleep"],
+        ["13:00", "travel"],
+        ["14:00", "snack"],
+        ["17:00", "dinner"],
+        ["18:30", "bathroom"],
+        ["19:30", "sleep"],
+      ];
+      App.now = () => new Date();
+      App.update = () => {
+        const now = App.now();
+        const hour = now.getHours() + Math.floor(now.getMinutes() / 15) / 4;
+        const schedule = App.schedule
+          .map(([time, what]) => [App.parseTime(time), what])
+          .reverse();
+        const current = schedule.find(([time]) => hour >= time)[1];
+        if (main.classList.contains(current)) {
+          return;
+        }
+        main.innerHTML = "";
+        main.className = "";
+        main.appendChild(window[current].content.cloneNode(true));
+        main.classList.add(current);
+      };
+      App.update();
+      setInterval(App.update, 1000);
+    </script>
+  </body>
+</html>
